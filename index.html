@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Faxi Bakery</title>
+<meta name="description" content="Faxi Bakery, a bakery with unregular stuff on Route 1 under Eyjafjallajökull. Fresh cinnamon buns, coffee and matcha.">
+<link rel="preload" href="fonts/CormorantGaramond-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="img/f-hero-mountain-cookies-2000.jpg" as="image" media="(min-width: 700px)">
+<link rel="preload" href="img/f-hero-mountain-cookies-900.jpg" as="image" media="(max-width: 699px)">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --cream: #FBF6EA; --wood: #3A2116; --wood-2: #4E2E1E; --linen: #E9DCC6; --roof: #9E3B2C;
+  --display: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  --text: 'EB Garamond', Georgia, serif;
+  --sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --pad: clamp(16px, 2.1vw, 30px);
+}
+* { box-sizing: border-box; margin: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--cream); color: var(--wood); font-family: var(--text); font-size: 18px; line-height: 1.45; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 1.5px solid currentColor; outline-offset: 4px; }
+
+/* link underline (MOTION #14) */
+.u { position: relative; display: inline-block; }
+.u::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: right; transition: transform .35s cubic-bezier(.22,1,.36,1); }
+.u:hover::after, .u:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.u.always::after { transform: scaleX(1); }
+.u.always:hover::after { animation: reline .7s cubic-bezier(.22,1,.36,1); }
+@keyframes reline { 0% { transform: scaleX(1); transform-origin: right; } 49% { transform: scaleX(0); transform-origin: right; } 50% { transform-origin: left; } 100% { transform: scaleX(1); transform-origin: left; } }
+
+/* ── Hero: a blind over a fixed photo (LJ, measured) ───────────── */
+.hero { position: relative; height: 100vh; height: 100svh; clip-path: inset(0); color: var(--cream); }
+.hero__photo { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+.hero::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(30,18,10,.42) 0%, rgba(30,18,10,0) 38%, rgba(30,18,10,0) 62%, rgba(30,18,10,.38) 100%); }
+.hero__line { position: absolute; z-index: 2; left: 50%; bottom: calc(var(--pad) + 4px); translate: -50% 0; white-space: nowrap;
+  font-family: var(--text); font-size: clamp(17px, 1.5vw, 22px); }
+
+/* Wordmark: one centre axis. Fixed, scrubbed into a centred header logo (LJ mechanic, measured) */
+.wordmark { position: fixed; z-index: 30; top: var(--pad); left: 50%; transform-origin: 50% 0; text-align: center;
+  color: var(--cream); white-space: nowrap; will-change: transform; pointer-events: none; }
+.wm-eyebrow { display: block; font-family: var(--sans); font-weight: 300; font-size: 13px; letter-spacing: .55em; padding-left: .55em;
+  text-transform: uppercase; margin-bottom: 1.1em; }
+.wm-name { position: relative; display: block; font-family: var(--display); font-weight: 500; line-height: .74; font-size: 30vw;
+  letter-spacing: .03em; padding-left: .03em; pointer-events: auto; }
+.card { position: absolute; bottom: -.1em; width: .27em; padding: .02em; background: var(--cream);
+  box-shadow: 0 18px 40px -18px rgba(30,18,10,.55); }
+.card img { width: 100%; height: auto; }
+.card--l { left: -.05em; rotate: -5deg; }
+.card--r { right: -.05em; rotate: 5deg; }
+
+/* Mirrored corners (LJ stacked nav): bottom on load, ride up with the blind, then fixed top corners */
+.nav, .info { position: fixed; z-index: 31; top: 0; display: grid; gap: 2px;
+  font-family: var(--text); font-size: 20px; line-height: 26px; color: var(--cream); will-change: transform; }
+.nav { left: var(--pad); }
+.info { right: var(--pad); text-align: right; }
+.nav.is-dark, .info.is-dark, .wordmark.is-dark { color: var(--wood); }
+/* Header strip: fades in once the hero has closed, so the fixed logo and corners stay legible over photos and the wood band */
+.bar { position: fixed; z-index: 29; inset: 0 0 auto; height: calc(var(--pad) * 2 + 66px); background: var(--cream);
+  box-shadow: 0 1px 0 rgba(58,33,22,.08); opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+.bar.is-on { opacity: 1; }
+
+/* Spiral mark (LJ star → Faxi's spiral), fixed bottom-left */
+.spiral { position: fixed; z-index: 31; left: var(--pad); bottom: var(--pad); width: 34px; height: 34px; display: grid; place-items: center;
+  color: var(--roof); transform: scale(0); }
+.spiral svg { width: 100%; height: 100%; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.spiral:hover svg { transform: rotate(180deg); }
+
+/* ── Statement (SB "our goal") ─────────────────────────────────── */
+.statement { position: relative; z-index: 2; background: var(--cream); padding: clamp(110px, 16vh, 190px) var(--pad) clamp(90px, 13vh, 160px); text-align: center; }
+.statement__text { font-family: var(--display); font-weight: 500; font-size: clamp(34px, 4.6vw, 68px); line-height: 1.06; letter-spacing: -.012em;
+  max-width: 15.5em; margin: 0 auto; }
+.statement__text .ln { display: block; }
+.statement__text em { font-family: var(--text); font-style: italic; color: var(--roof); font-size: .92em; }
+/* Animated drawings set between the words (SB cut-outs → Higgsfield GPT Image 2.6 GIFs of her bakes) */
+.draw { display: inline-block; width: auto; height: 1.85em; vertical-align: -.62em; margin: -.42em -.12em; position: relative; z-index: -1; }
+.statement__text { position: relative; z-index: 0; }
+.aside { display: block; font-family: var(--sans); font-weight: 300; font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  line-height: 1.6; margin: .9em auto .7em; max-width: 30em; }
+.statement__link { display: inline-block; margin-top: 46px; font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+
+/* ── Gallery (LJ slider, measured values) ──────────────────────── */
+.gallery { position: relative; z-index: 2; background: var(--cream); padding: 0 0 clamp(90px, 13vh, 150px); }
+.gallery__head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 var(--pad) 26px max(var(--pad), 160px); }
+.gallery__title { font-family: var(--text); font-size: 20px; }
+.gallery__title span { font-family: var(--sans); font-weight: 300; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; margin-left: 12px; }
+.pager { display: flex; gap: 7px; font-family: var(--text); font-size: 12px; }
+.pager button { all: unset; cursor: pointer; opacity: .35; transition: opacity .3s; padding: 2px; }
+.pager button[aria-current="true"] { opacity: 1; }
+.pager button:focus-visible { outline: 1px solid currentColor; }
+.viewport { overflow: hidden; padding-left: var(--pad); outline: none; }
+.track { display: flex; align-items: center; gap: 75px; width: max-content; will-change: transform; cursor: grab; touch-action: pan-y; }
+.track.is-drag { cursor: grabbing; }
+.slide { flex: none; overflow: hidden; }
+.slide img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.22,1,.36,1); user-select: none; -webkit-user-drag: none; }
+.slide:hover img { transform: scale(1.03); }
+.slide--w { width: 375px; } .slide--n { width: 300px; }
+.slide--l { height: 250px; } .slide--m { height: 450px; } .slide--t { height: 563px; }
+.gallery__nav { display: flex; gap: 18px; padding: 24px var(--pad) 0; font-family: var(--text); font-size: 18px; }
+.gallery__nav button { all: unset; cursor: pointer; }
+
+
+/* ── Our bakes (SB: 1 large + 2 small) ─────────────────────────── */
+.bakes { position: relative; z-index: 2; background: var(--cream); padding: clamp(90px, 13vh, 150px) var(--pad); }
+.bakes__head { text-align: center; margin-bottom: 48px; }
+.bakes__title { font-family: var(--display); font-weight: 500; font-size: clamp(36px, 3.4vw, 52px); letter-spacing: .05em; padding-left: .05em; line-height: 1; }
+.bakes__grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; max-width: 1180px; margin: 0 auto; align-items: start; }
+.bake figure { overflow: hidden; background: var(--linen); margin: 0; }
+.bake img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; transition: transform .8s cubic-bezier(.22,1,.36,1); }
+.bake--big img { aspect-ratio: 1 / 1.08; }
+.bake:hover img { transform: scale(1.03); }
+.bake__meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 17px; }
+.bake__meta span:last-child { font-family: var(--text); font-style: italic; opacity: .7; }
+
+/* ── The roll (SB ingredient band, wood) ───────────────────────── */
+.roll { position: relative; z-index: 2; background: var(--wood-2); color: var(--cream); padding: clamp(80px, 12vh, 140px) var(--pad); text-align: center; overflow: hidden; }
+.roll__title { font-family: var(--display); font-weight: 500; font-size: clamp(30px, 3.2vw, 48px); letter-spacing: .05em; padding-left: .05em; line-height: 1.08; }
+.roll__stage { max-width: 1060px; margin: 60px auto 0; display: grid; grid-template-columns: 1fr minmax(260px, 430px) 1fr; align-items: center; gap: 0; }
+.roll__spin img { width: 100%; display: block; }
+.roll__col { display: grid; gap: 70px; }
+.callout { position: relative; font-family: var(--sans); font-weight: 300; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; padding: 0 0 9px; }
+.roll__col--l .callout { text-align: left; padding-right: 26px; }
+.roll__col--r .callout { text-align: right; padding-left: 26px; }
+.callout .t { display: inline-block; }
+.callout .line { position: absolute; left: 0; right: 0; bottom: 0; border-bottom: 1px dotted rgba(251,246,234,.6); }
+.roll__col--l .callout .line { transform-origin: 0 50%; right: -6px; }
+.roll__col--r .callout .line { transform-origin: 100% 50%; left: -6px; }
+.callout .dot { position: absolute; bottom: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--cream); }
+.roll__col--l .callout .dot { right: -9px; }
+.roll__col--r .callout .dot { left: -9px; }
+
+/* ── The place (LJ image + text) ───────────────────────────────── */
+.place { position: relative; z-index: 2; background: var(--cream); padding: clamp(90px, 13vh, 150px) var(--pad); display: grid;
+  grid-template-columns: minmax(260px, 31%) 1fr; gap: clamp(30px, 6vw, 110px); align-items: start; }
+.place__media { overflow: hidden; aspect-ratio: 3 / 4; }
+.place__media img { width: 100%; height: 116%; margin-top: -8%; object-fit: cover; }
+.place__blocks { display: grid; gap: 56px; padding-top: 10px; max-width: 560px; }
+.place h3 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.2vw, 34px); letter-spacing: .02em; line-height: 1.1; margin-bottom: 12px; }
+.place p { font-size: 18px; }
+
+/* ── Inset photo (LJ full-width media) ─────────────────────────── */
+.inset { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) clamp(90px, 13vh, 150px); }
+.inset__frame { overflow: hidden; height: min(78vh, 760px); }
+.inset__frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
+
+/* ── Footer (LJ script + SB wordmark) ──────────────────────────── */
+.foot { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) var(--pad); border-top: 1px solid #3a211622; }
+.foot__script { font-family: var(--text); font-style: italic; font-size: 18.5vw; line-height: .95; letter-spacing: -.02em; text-align: center; padding: .08em 0 .04em; color: var(--wood); }
+.foot__cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; font-size: 14px; line-height: 1.5; padding-top: 10px; }
+.foot__cols b { display: block; font-family: var(--sans); font-weight: 300; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 4px; }
+.note { font-family: var(--sans); font-weight: 300; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; opacity: .55; margin-top: 26px; }
+
+
+/* SNDR Studio badge (studio signature on every preview) */
+@font-face{font-family:'ProjektBlackbirdIS';src:url('fonts/ProjektBlackbirdIS.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+.sndr-badge{display:inline-flex;align-items:center;gap:0.5rem;min-height:44px;text-decoration:none}
+.sndr-badge-mark{font-family:'ProjektBlackbirdIS',sans-serif;color:var(--sndr-ink);font-size:15px;letter-spacing:0.02em}
+.sndr-badge-star{color:var(--sndr-ember)}
+.sndr-badge-studio{font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;color:var(--sndr-ink);font-size:10.5px;letter-spacing:0.1em;opacity:0.85}
+.foot__end { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
+.foot__end .note { margin-top: 0; }
+
+@media (max-width: 699px) {
+  body { font-size: 17px; }
+  .wm-eyebrow { font-size: 10px; }
+  .nav, .info { font-size: 16px; line-height: 21px; }
+  .bar { height: calc(var(--pad) * 2 + 60px); }
+  .hero__line { white-space: normal; max-width: 80%; text-align: center; bottom: calc(var(--pad) + 80px); font-size: 19px; line-height: 1.2; }
+  .gallery__head { padding-left: var(--pad); padding-top: 70px; }
+  .slide--w { width: 260px; } .slide--n { width: 210px; }
+  .slide--l { height: 174px; } .slide--m { height: 315px; } .slide--t { height: 390px; }
+  .track { gap: 40px; }
+  .bakes__grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bake--big { grid-column: 1 / -1; }
+  .bake__meta { font-size: 15px; flex-direction: column; gap: 0; }
+  .roll__stage { grid-template-columns: 1fr 1fr; gap: 26px 18px; margin-top: 36px; }
+  .roll__spin { grid-column: 1 / -1; grid-row: 1; width: 78%; margin: 0 auto; }
+  .roll__col { gap: 18px; }
+  .roll__col--l .callout, .roll__col--r .callout { text-align: center; padding: 0 0 8px; font-size: 11px; }
+  .callout .dot { display: none; }
+  .place { grid-template-columns: 1fr; }
+  .inset__frame { height: 62vh; }
+  .foot__cols { grid-template-columns: 1fr 1fr; }
+  .foot__script { font-size: 25vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide img, .u::after, .spiral svg, .bake img { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="bar" aria-hidden="true"></div>
+<div class="wordmark">
+  <span class="wm-eyebrow">Bakery · Café</span>
+  <a class="wm-name" href="#top" aria-label="Faxi Bakery, back to top">FAXI
+    <span class="card card--l" aria-hidden="true"><img src="img/draw-matcha.webp" alt=""></span>
+    <span class="card card--r" aria-hidden="true"><img src="img/draw-bun.webp" alt=""></span>
+  </a>
+</div>
+
+<nav class="nav" aria-label="Main">
+  <a class="u" href="#bakes">Menu</a>
+  <a class="u" href="#statement">Our story</a>
+  <a class="u" href="#visit">Visit</a>
+</nav>
+<aside class="info" aria-label="Where and when">
+  <span>Route 1</span>
+  <span>Hvolsvöllur</span>
+  <span>Open 9 to 8</span>
+</aside>
+
+<a class="spiral" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener" aria-label="Faxi Bakery on Instagram">
+  <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 20c0-1.7 1.6-2.6 3-1.8 2 1.1 1.7 4.3-.4 5.3-3.1 1.5-6.6-1.1-6.4-4.4.3-4.2 4.8-6.6 8.6-5 4.8 2 6 8.3 2.6 12.1-3.9 4.4-11.2 4-14.6-.8-3.8-5.3-1.6-13 4.3-15.6 6.5-2.9 14.4.8 16.4 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+</a>
+
+<main id="top">
+  <section class="hero" aria-label="Faxi Bakery">
+    <picture>
+      <source media="(max-width: 699px)" srcset="img/f-hero-mountain-cookies-900.jpg">
+      <img class="hero__photo" src="img/f-hero-mountain-cookies-2000.jpg" alt="A row of Faxi cookies on a table outside, the green Eyjafjöll mountains behind them">
+    </picture>
+    <p class="hero__line">COFFEE and BUNS under Eyjafjallajökull</p>
+  </section>
+
+  <section class="statement" id="statement" aria-label="About Faxi">
+    <h2 class="statement__text">
+      <span class="ln">a bakery <img class="draw draw--wide" src="img/draw-cookie.webp" alt=""> with</span>
+      <span class="ln">unregular stuff, baked</span>
+      <span class="aside">Cinnamon buns every hour · Coffee and matcha · Route 1, by the mountain</span>
+      <span class="ln">by hand <img class="draw draw--wide" src="img/draw-bun.webp" alt=""> under the</span>
+      <span class="ln"><img class="draw draw--wide" src="img/draw-mountain.webp" alt=""> volcano. <em>human made</em> <img class="draw draw--wide" src="img/draw-latte.webp" alt=""></span>
+    </h2>
+    <a class="statement__link u always" href="#bakes">See what's in the oven</a>
+  </section>
+
+  <section class="gallery" id="gallery" aria-label="Gallery">
+    <div class="gallery__head">
+      <p class="gallery__title">Faxi <span>by the road</span></p>
+      <div class="pager" role="tablist" aria-label="Choose a photo"></div>
+    </div>
+    <div class="viewport" tabindex="0" aria-label="Photos, use the arrow keys to move">
+      <div class="track">
+        <figure class="slide slide--w slide--l"><img src="img/f-table-spread-900.jpg" alt="A table of bakes, berry drinks and flowers" loading="lazy"></figure>
+        <figure class="slide slide--n slide--m"><img src="img/f-matcha-latte-900.jpg" alt="A matcha latte in front of the plant wall" loading="lazy"></figure>
+        <figure class="slide slide--w slide--t"><img src="img/f-facade-rolls-900.jpg" alt="Cinnamon rolls on the table in front of the FAXI BAKERY sign" loading="lazy"></figure>
+        <figure class="slide slide--n slide--m"><img src="img/f-cookie-sprinkles-900.jpg" alt="A stuffed cookie with pink icing and sprinkles" loading="lazy"></figure>
+        <figure class="slide slide--w slide--t"><img src="img/f-braid-mountains-900.jpg" alt="Braided buns in a basket, snowy mountains behind" loading="lazy"></figure>
+        <figure class="slide slide--n slide--m"><img src="img/f-berry-drink-900.jpg" alt="A berry and mint drink in a jar" loading="lazy"></figure>
+        <figure class="slide slide--w slide--t"><img src="img/f-door-cookie-900.jpg" alt="A cookie held up at the decorated front door" loading="lazy"></figure>
+        <figure class="slide slide--n slide--m"><img src="img/f-iced-latte-900.jpg" alt="An iced latte by the green velvet bench" loading="lazy"></figure>
+        <figure class="slide slide--w slide--t"><img src="img/f-braid-facade-900.jpg" alt="Braided buns in front of the bakery" loading="lazy"></figure>
+      </div>
+    </div>
+    <div class="gallery__nav"><button class="u" type="button" data-dir="-1" aria-label="Previous photo">Previous</button><button class="u" type="button" data-dir="1" aria-label="Next photo">Next</button></div>
+  </section>
+
+
+  <section class="bakes" id="bakes" aria-label="Our bakes">
+    <div class="bakes__head"><h2 class="bakes__title">OUR BAKES</h2></div>
+    <div class="bakes__grid">
+      <article class="bake bake--big"><figure><img src="img/f-tray-rolls-2000.jpg" alt="A tray of fresh cinnamon rolls" loading="lazy"></figure><p class="bake__meta"><span>Cinnamon rolls</span><span>Kanilsnúðar</span></p></article>
+      <article class="bake"><figure><img src="img/f-cookie-held-900.jpg" alt="A stuffed cookie held up against the plant wall" loading="lazy"></figure><p class="bake__meta"><span>Stuffed cookies</span><span>Fylltar smákökur</span></p></article>
+      <article class="bake"><figure><img src="img/f-bagel-latte-900.jpg" alt="A bagel sandwich with a latte" loading="lazy"></figure><p class="bake__meta"><span>Bagels and coffee</span><span>Beyglur og kaffi</span></p></article>
+    </div>
+  </section>
+
+  <section class="roll" aria-label="What goes into a Faxi roll">
+    <h2 class="roll__title">WHAT GOES INTO<br>A FAXI ROLL</h2>
+    <div class="roll__stage">
+      <div class="roll__col roll__col--l">
+        <p class="callout"><span class="t">Butter</span><span class="line"></span><span class="dot"></span></p>
+        <p class="callout"><span class="t">Cinnamon</span><span class="line"></span><span class="dot"></span></p>
+        <p class="callout"><span class="t">Cardamom</span><span class="line"></span><span class="dot"></span></p>
+      </div>
+      <div class="roll__spin"><img class="roll__img" src="img/draw-roll-top.webp" alt="A drawing of a Faxi cinnamon roll from above, steam rising"></div>
+      <div class="roll__col roll__col--r">
+        <p class="callout"><span class="t">Flour</span><span class="line"></span><span class="dot"></span></p>
+        <p class="callout"><span class="t">Brown sugar</span><span class="line"></span><span class="dot"></span></p>
+        <p class="callout"><span class="t">An hour, every hour</span><span class="line"></span><span class="dot"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="place" aria-label="The place">
+    <div class="place__media"><img src="img/f-facade-table-900.jpg" alt="The front of Faxi Bakery, a table with a basket of bread by the door" loading="lazy"></div>
+    <div class="place__blocks">
+      <div><h3>COFFEE and MATCHA</h3><p>Espresso, iced lattes, matcha and fresh berry drinks in big jars, made at the counter while the rolls cool.</p></div>
+      <div><h3>BUNS every HOUR</h3><p>A fresh tray of cinnamon rolls comes out of the oven every hour, so something warm is always waiting.</p></div>
+      <div><h3>FOR the ROAD</h3><p>Pull off Route 1, take a coffee and a roll for the drive, or sit by the plant wall and stay a while.</p></div>
+    </div>
+  </section>
+
+  <section class="inset" aria-label="Inside Faxi">
+    <div class="inset__frame"><img src="img/f-window-bread-2000.jpg" alt="Baskets of bread at the window, green fields outside" loading="lazy"></div>
+  </section>
+
+  <footer class="foot" id="visit">
+    <p class="foot__script">Human made</p>
+    <div class="foot__cols">
+      <p><b>Faxi Bakery</b>Route 1, Hvolsvöllur<br>under Eyjafjallajökull</p>
+      <p><b>Open</b>Every day, 9 to 8</p>
+      <p><b>Call</b>+354 835 9534</p>
+      <p><b>Follow</b><a class="u" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener">@faxi_bakery_</a></p>
+    </div>
+    <div class="foot__end"><p class="note">Prototype by SNDR Studio. Photos by Faxi Bakery. Hours and the roll list are from the earlier draft, to confirm.</p><a class="sndr-badge" href="https://sndrstudio.is" target="_blank" rel="noreferrer"
+  aria-label="Hannað af SNDR Studio" data-logotype
+  style="--sndr-ink:rgba(23,23,23,0.72);--sndr-ember:#C4531B">
+  <span class="sndr-badge-mark">SN<span class="sndr-badge-star">✦</span>DR</span>
+  <span class="sndr-badge-studio">STUDIO</span>
+</a></div>
+  </footer>
+</main>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phone = () => innerWidth < 700;
+  const wm = document.querySelector('.wordmark');
+  const name = wm.querySelector('.wm-name');
+  const eyebrow = wm.querySelector('.wm-eyebrow');
+  const cards = wm.querySelectorAll('.card');
+  const nav = document.querySelector('.nav');
+  const info = document.querySelector('.info');
+  const corners = [nav, info];
+  const spiral = document.querySelector('.spiral');
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.set(wm, { xPercent: -50 });
+
+  // One centre axis: fit FAXI by measurement (desktop: full width inside the margins, cards included; phone: 86%)
+  function fit() {
+    const s = gsap.getProperty(wm, 'scale'); gsap.set(wm, { scale: 1 });
+    const pad = parseFloat(getComputedStyle(nav).left);
+    const want = phone() ? innerWidth * .86 : (innerWidth - 2 * pad) * .9;
+    name.style.fontSize = '100px';
+    name.style.fontSize = (100 * want / name.getBoundingClientRect().width) + 'px';
+    cards.forEach(c => c.style.display = phone() ? 'none' : '');
+    gsap.set(wm, { scale: s });
+  }
+  fit();
+  addEventListener('resize', fit);
+  ScrollTrigger.addEventListener('refreshInit', fit);
+
+  // ── Lockup → centred header logo; corners ride up with the blind (MOTION #5–#7, Le Jardin's measured scrub)
+  const pad = () => parseFloat(getComputedStyle(nav).left);
+  const cornerStart = () => innerHeight - nav.offsetHeight - pad();
+  const targetScale = () => (phone() ? 96 : 132) / (name.getBoundingClientRect().width / gsap.getProperty(wm, 'scale'));
+  const bar = document.querySelector('.bar');
+  function setDark(p) { const d = p > .97; [wm, ...corners].forEach(el => el.classList.toggle('is-dark', d)); bar.classList.toggle('is-on', d); }
+  gsap.set(corners, { y: cornerStart() });
+
+  if (reduce) {
+    ScrollTrigger.create({ start: 0, end: () => innerHeight - 100, onUpdate: s => {
+      const done = s.progress > .5;
+      gsap.set(wm, { scale: done ? targetScale() : 1 }); gsap.set([eyebrow, ...cards], { autoAlpha: done ? 0 : 1 });
+      gsap.set(corners, { y: done ? pad() : cornerStart() }); setDark(done ? 1 : 0); } });
+  } else {
+    gsap.timeline({ scrollTrigger: { start: 0, end: () => innerHeight - 100, scrub: 1, invalidateOnRefresh: true, onUpdate: s => setDark(s.progress) } })
+      .fromTo(wm, { scale: 1 }, { scale: () => targetScale(), ease: 'none' }, 0)
+      .to(eyebrow, { autoAlpha: 0, ease: 'none', duration: .3 }, 0)
+      .to(cards, { autoAlpha: 0, scale: .7, y: '-0.1em', ease: 'none', duration: .25 }, 0);
+    gsap.fromTo(corners, { y: () => cornerStart() }, { y: () => pad(), ease: 'none', scrollTrigger: { start: 0, end: () => cornerStart() - pad(), scrub: true, invalidateOnRefresh: true } });
+  }
+
+  // Spiral mark appears after 60 px (MOTION #8, LJ star button)
+  gsap.to(spiral, { scale: 1, rotate: 0, duration: .5, ease: 'power1.inOut', startAt: { scale: 0, rotate: -90 },
+    scrollTrigger: { start: 60, toggleActions: 'play none none reverse' } });
+
+  // ── Opening (MOTION #1–#3)
+  if (!reduce) {
+    gsap.from('.hero__photo', { scale: 1.06, duration: 1.6, ease: 'power3.out' });
+    gsap.from(wm, { autoAlpha: 0, y: 30, duration: 1, ease: 'power3.out', delay: .1 });
+    gsap.from([...nav.children, ...info.children, '.hero__line'], { autoAlpha: 0, y: 12, duration: .6, ease: 'power3.out', delay: .5, stagger: .06 });
+  }
+
+  // ── Statement: lines fade up (LJ, measured), chips pop in (MOTION #9, #10)
+  if (!reduce) {
+    const st = { trigger: '.statement__text', start: 'top bottom+=50px' };
+    gsap.from('.statement__text .ln, .statement__text .aside', { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', stagger: .08, scrollTrigger: st });
+    gsap.from('.chip', { scale: .6, rotate: i => (i % 2 ? 6 : -6), autoAlpha: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15, scrollTrigger: st });
+    gsap.utils.toArray('.statement__link, .gallery__head, .viewport, .gallery__nav, .foot__script, .foot__cols').forEach(el =>
+      gsap.from(el, { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', scrollTrigger: { trigger: el, start: 'top bottom+=50px' } }));
+  }
+
+  // ── Gallery slider (MOTION #11–#13; Le Jardin: speed 800, autoplay 5000, gap 75)
+  const viewport = document.querySelector('.viewport');
+  const track = document.querySelector('.track');
+  const slides = [...track.children];
+  const pager = document.querySelector('.pager');
+  let index = 0, timer = null, x = 0;
+  slides.forEach((_, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = i + 1; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', 'Photo ' + (i + 1)); b.addEventListener('click', () => go(i, true)); pager.append(b); });
+  const maxX = () => Math.max(0, track.scrollWidth - viewport.clientWidth + parseFloat(getComputedStyle(viewport).paddingLeft));
+  function go(i, user) {
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    x = Math.min(slides[index].offsetLeft, maxX());
+    gsap.to(track, { x: -x, duration: reduce ? 0 : .8, ease: 'power2.inOut', overwrite: true });
+    [...pager.children].forEach((b, k) => b.setAttribute('aria-current', k === index ? 'true' : 'false'));
+    if (user) restart();
+  }
+  function restart() { clearInterval(timer); if (reduce) return; timer = setInterval(() => go(x >= maxX() - 1 ? 0 : index + 1), 5000); }
+  document.querySelectorAll('.gallery__nav button').forEach(b => b.addEventListener('click', () => go(index + +b.dataset.dir, true)));
+  viewport.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { go(index + 1, true); e.preventDefault(); } if (e.key === 'ArrowLeft') { go(index - 1, true); e.preventDefault(); } });
+  ['mouseenter', 'focusin'].forEach(ev => viewport.addEventListener(ev, () => clearInterval(timer)));
+  ['mouseleave', 'focusout'].forEach(ev => viewport.addEventListener(ev, restart));
+  // drag / swipe
+  let sx = 0, startX = 0, dragging = false, moved = 0;
+  track.addEventListener('pointerdown', e => { dragging = true; moved = 0; sx = e.clientX; startX = x; track.classList.add('is-drag'); clearInterval(timer); track.setPointerCapture(e.pointerId); });
+  track.addEventListener('pointermove', e => { if (!dragging) return; moved = sx - e.clientX; gsap.set(track, { x: -Math.max(-60, Math.min(maxX() + 60, startX + moved)) }); });
+  const end = () => { if (!dragging) return; dragging = false; track.classList.remove('is-drag');
+    const target = startX + moved; let best = 0; slides.forEach((s, k) => { if (Math.abs(s.offsetLeft - target) < Math.abs(slides[best].offsetLeft - target)) best = k; });
+    go(Math.abs(moved) > 40 && best === index ? index + Math.sign(moved) : best, true); };
+  track.addEventListener('pointerup', end); track.addEventListener('pointercancel', end);
+  go(0); restart();
+  addEventListener('resize', () => go(index));
+
+  // ── Lower page (MOTION #15–#19): LJ fade-ups, SB roll diagram drawn in, quiet scrubs
+  if (!reduce) {
+    gsap.utils.toArray('.bakes__head, .bake, .roll__title, .place__blocks > div').forEach((el, i) =>
+      gsap.from(el, { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', scrollTrigger: { trigger: el, start: 'top bottom+=50px' } }));
+    gsap.timeline({ scrollTrigger: { trigger: '.roll__stage', start: 'top 78%' } })
+      .from('.roll__img', { scale: .8, rotate: -24, autoAlpha: 0, duration: 1.2, ease: 'power3.out' })
+      .from('.callout .line', { scaleX: 0, duration: .8, ease: 'power2.out', stagger: .08 }, '-=.7')
+      .from('.callout .dot', { scale: 0, duration: .3, ease: 'back.out(3)', stagger: .08 }, '-=.7')
+      .from('.callout .t', { autoAlpha: 0, y: 10, duration: .5, ease: 'power2.out', stagger: .08 }, '-=.9');
+    gsap.to('.roll__spin', { rotate: 28, ease: 'none', scrollTrigger: { trigger: '.roll', start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.fromTo('.place__media img', { yPercent: -7 }, { yPercent: 7, ease: 'none', scrollTrigger: { trigger: '.place__media', start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.fromTo('.inset__frame img', { scale: 1.12 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.inset__frame', start: 'top bottom', end: 'center center', scrub: true } });
+  }
+  document.fonts.ready.then(() => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
