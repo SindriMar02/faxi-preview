@@ -74,6 +74,16 @@ img { display: block; max-width: 100%; }
 .spiral svg { width: 100%; height: 100%; transition: transform .6s cubic-bezier(.22,1,.36,1); }
 .spiral:hover svg { transform: rotate(180deg); }
 
+
+/* Instagram shortcut, fixed bottom-right (mirrors the spiral bottom-left) */
+.social { position: fixed; z-index: 31; right: var(--pad); bottom: var(--pad); width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(251,246,234,.94); color: var(--wood); box-shadow: 0 10px 24px -12px rgba(30,18,10,.5); transform: scale(0);
+  transition: background .3s, color .3s; }
+.social svg { width: 22px; height: 22px; }
+.social:hover, .social:focus-visible { background: var(--wood); color: var(--cream); }
+.ig-inline { display: inline-flex; align-items: center; gap: 7px; }
+.ig-inline svg { width: 16px; height: 16px; }
+
 /* ── Statement (SB "our goal") ─────────────────────────────────── */
 .statement { position: relative; z-index: 2; background: var(--cream); padding: clamp(110px, 16vh, 190px) var(--pad) clamp(90px, 13vh, 160px); text-align: center; }
 .statement__text { font-family: var(--display); font-weight: 500; font-size: clamp(34px, 4.6vw, 68px); line-height: 1.06; letter-spacing: -.012em;
@@ -177,7 +187,7 @@ img { display: block; max-width: 100%; }
 .inset__frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
 
 /* ── Footer (LJ script + SB wordmark) ──────────────────────────── */
-.foot { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) var(--pad); border-top: 1px solid #3a211622; }
+.foot { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) calc(var(--pad) + 64px); border-top: 1px solid #3a211622; }
 .foot__kicker { text-align: center; font-family: var(--text); font-style: italic; color: var(--roof); font-size: clamp(26px, 2.6vw, 40px); padding-top: clamp(60px, 9vh, 110px); }
 .foot__mark { text-align: center; font-family: var(--display); font-weight: 500; color: var(--wood); line-height: .76; letter-spacing: .03em; padding: .06em 0 .04em .03em;
   font-size: 33vw; white-space: nowrap; overflow: hidden; }
@@ -257,9 +267,11 @@ img { display: block; max-width: 100%; }
   <span>Open 9 to 8</span>
 </aside>
 
-<a class="spiral" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener" aria-label="Faxi Bakery on Instagram">
+<a class="spiral" href="#top" aria-label="Back to the top">
   <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 20c0-1.7 1.6-2.6 3-1.8 2 1.1 1.7 4.3-.4 5.3-3.1 1.5-6.6-1.1-6.4-4.4.3-4.2 4.8-6.6 8.6-5 4.8 2 6 8.3 2.6 12.1-3.9 4.4-11.2 4-14.6-.8-3.8-5.3-1.6-13 4.3-15.6 6.5-2.9 14.4.8 16.4 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
 </a>
+
+<a class="social" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener" aria-label="Faxi Bakery on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg></a>
 
 <main id="top">
   <section class="hero" aria-label="Faxi Bakery">
@@ -351,7 +363,7 @@ img { display: block; max-width: 100%; }
       <p><b>Faxi Bakery</b>Route 1, Hvolsvöllur<br>under Eyjafjallajökull</p>
       <p><b>Open</b>Every day, 9 to 8</p>
       <p><b>Call</b>+354 835 9534</p>
-      <p><b>Follow</b><a class="u" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener">@faxi_bakery_</a></p>
+      <p><b>Follow</b><a class="u ig-inline" href="https://www.instagram.com/faxi_bakery_/" target="_blank" rel="noopener" aria-label="Faxi Bakery on Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor"/></svg>@faxi_bakery_</a></p>
     </div>
     <div class="foot__end"><p class="note">Prototype by SNDR Studio. Photos by Faxi Bakery. Hours and the roll list are from the earlier draft, to confirm.</p><a class="sndr-badge" href="https://sndrstudio.is" target="_blank" rel="noreferrer"
   aria-label="Hannað af SNDR Studio" data-logotype
@@ -418,6 +430,7 @@ img { display: block; max-width: 100%; }
   if (!reduce) gsap.to('.hero__line', { autoAlpha: 0, ease: 'none', scrollTrigger: { start: 0, end: () => innerHeight * .45, scrub: true } });
 
   // Spiral mark appears after 60 px (MOTION #8, LJ star button)
+  gsap.to('.social', { scale: 1, duration: .5, ease: 'power1.inOut', startAt: { scale: 0 }, scrollTrigger: { start: 60, toggleActions: 'play none none reverse' } });
   gsap.to(spiral, { scale: 1, rotate: 0, duration: .5, ease: 'power1.inOut', startAt: { scale: 0, rotate: -90 },
     scrollTrigger: { start: 60, toggleActions: 'play none none reverse' } });
 
