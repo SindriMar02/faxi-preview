@@ -52,11 +52,10 @@ img { display: block; max-width: 100%; }
   text-transform: uppercase; margin-bottom: 1.1em; }
 .wm-name { position: relative; display: block; font-family: var(--display); font-weight: 500; line-height: .74; font-size: 30vw;
   letter-spacing: .03em; padding-left: .03em; pointer-events: auto; }
-.card { position: absolute; bottom: -.1em; width: .27em; padding: .02em; background: var(--cream);
-  box-shadow: 0 18px 40px -18px rgba(30,18,10,.55); }
-.card img { width: 100%; height: auto; }
-.card--l { left: -.05em; rotate: -5deg; }
-.card--r { right: -.05em; rotate: 5deg; }
+.card { position: absolute; bottom: -.14em; width: .3em; }
+.card img { width: 100%; height: auto; filter: drop-shadow(0 .03em .04em rgba(20,12,6,.45)); }
+.card--l { left: -.06em; rotate: -6deg; width: .22em; }
+.card--r { right: -.08em; rotate: 6deg; }
 
 /* Mirrored corners (LJ stacked nav): bottom on load, ride up with the blind, then fixed top corners */
 .nav, .info { position: fixed; z-index: 31; top: 0; display: grid; gap: 2px;
@@ -147,6 +146,28 @@ img { display: block; max-width: 100%; }
 .place h3 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.2vw, 34px); letter-spacing: .02em; line-height: 1.1; margin-bottom: 12px; }
 .place p { font-size: 18px; }
 
+
+/* ── Our story (SB "OUR STORY": cropped giant title, bakes flying, polaroid + italic line). PENDING her text + photo ── */
+.story { position: relative; z-index: 2; background: var(--cream); padding: clamp(90px, 13vh, 150px) 0; overflow: hidden; }
+.story__title { position: relative; font-family: var(--display); font-weight: 500; font-size: 24vw; line-height: .78; letter-spacing: .01em;
+  white-space: nowrap; text-align: center; color: var(--wood); margin: 0 -6vw; }
+.story__title span { display: inline-block; }
+.story__fly { position: absolute; z-index: 2; width: clamp(110px, 13vw, 210px); pointer-events: none; filter: drop-shadow(0 12px 16px rgba(58,33,22,.25)); }
+.story__fly--a { left: 14vw; top: 9vw; rotate: -10deg; }
+.story__fly--b { right: 11vw; top: -1vw; rotate: 8deg; }
+.story__body { display: grid; grid-template-columns: minmax(240px, 30%) 1fr; gap: clamp(30px, 6vw, 110px); align-items: center;
+  max-width: 1180px; margin: clamp(50px, 7vh, 90px) auto 0; padding: 0 var(--pad); }
+.polaroid { background: #fff; padding: 14px 14px 52px; box-shadow: 0 24px 50px -24px rgba(58,33,22,.45); rotate: -3deg; margin: 0; position: relative; }
+.polaroid img, .polaroid__slot { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.polaroid__slot { display: grid; place-content: center; text-align: center; gap: 6px; background: var(--linen); border: 1.5px dashed rgba(58,33,22,.35);
+  font-family: var(--sans); font-weight: 300; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgba(58,33,22,.65); padding: 20px; }
+.polaroid figcaption { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-family: var(--text); font-style: italic; font-size: 19px; }
+.story__lede { font-family: var(--display); font-weight: 500; font-size: clamp(30px, 3vw, 46px); line-height: 1.1; margin-bottom: 22px; }
+.story__lede em { font-family: var(--text); color: var(--roof); }
+.story__text p + p { margin-top: 1em; }
+.story__text p { max-width: 36em; }
+.pending { outline: 1.5px dashed rgba(158,59,44,.5); outline-offset: 6px; }
+
 /* ── Inset photo (LJ full-width media) ─────────────────────────── */
 .inset { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) clamp(90px, 13vh, 150px); }
 .inset__frame { overflow: hidden; height: min(78vh, 760px); }
@@ -154,7 +175,11 @@ img { display: block; max-width: 100%; }
 
 /* ── Footer (LJ script + SB wordmark) ──────────────────────────── */
 .foot { position: relative; z-index: 2; background: var(--cream); padding: 0 var(--pad) var(--pad); border-top: 1px solid #3a211622; }
-.foot__script { font-family: var(--text); font-style: italic; font-size: 18.5vw; line-height: .95; letter-spacing: -.02em; text-align: center; padding: .08em 0 .04em; color: var(--wood); }
+.foot__kicker { text-align: center; font-family: var(--text); font-style: italic; color: var(--roof); font-size: clamp(26px, 2.6vw, 40px); padding-top: clamp(60px, 9vh, 110px); }
+.foot__mark { text-align: center; font-family: var(--display); font-weight: 500; color: var(--wood); line-height: .76; letter-spacing: .03em; padding: .06em 0 .04em .03em;
+  font-size: 33vw; white-space: nowrap; overflow: hidden; }
+.foot__mark span { display: inline-block; }
+.foot__sub { text-align: center; font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .5em; padding-left: .5em; text-transform: uppercase; margin: 14px 0 46px; }
 .foot__cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; font-size: 14px; line-height: 1.5; padding-top: 10px; }
 .foot__cols b { display: block; font-family: var(--sans); font-weight: 300; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 4px; }
 .note { font-family: var(--sans); font-weight: 300; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; opacity: .55; margin-top: 26px; }
@@ -189,8 +214,15 @@ img { display: block; max-width: 100%; }
   .callout .dot { display: none; }
   .place { grid-template-columns: 1fr; }
   .inset__frame { height: 62vh; }
+  .story__title { font-size: 27vw; }
+  .story__fly { width: 26vw; }
+  .story__fly--a { left: 4vw; top: 16vw; }
+  .story__fly--b { right: 2vw; top: -4vw; }
+  .story__body { grid-template-columns: 1fr; }
+  .polaroid { width: 78%; margin: 0 auto; }
   .foot__cols { grid-template-columns: 1fr 1fr; }
-  .foot__script { font-size: 25vw; }
+  .foot__mark { font-size: 34vw; }
+  .foot__sub { font-size: 10px; margin-bottom: 34px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .slide img, .u::after, .spiral svg, .bake img { transition: none !important; }
@@ -203,8 +235,8 @@ img { display: block; max-width: 100%; }
 <div class="wordmark">
   <span class="wm-eyebrow">Bakery · Café</span>
   <a class="wm-name" href="#top" aria-label="Faxi Bakery, back to top">FAXI
-    <span class="card card--l" aria-hidden="true"><img src="img/draw-matcha.webp" alt=""></span>
-    <span class="card card--r" aria-hidden="true"><img src="img/draw-bun.webp" alt=""></span>
+    <span class="card card--l" aria-hidden="true"><img src="img/cut-matcha.webp" alt=""></span>
+    <span class="card card--r" aria-hidden="true"><img src="img/cut-bun.webp" alt=""></span>
   </a>
 </div>
 
@@ -300,12 +332,15 @@ img { display: block; max-width: 100%; }
     </div>
   </section>
 
+
   <section class="inset" aria-label="Inside Faxi">
     <div class="inset__frame"><img src="img/f-window-bread-2000.jpg" alt="Baskets of bread at the window, green fields outside" loading="lazy"></div>
   </section>
 
   <footer class="foot" id="visit">
-    <p class="foot__script">Human made</p>
+    <p class="foot__kicker">human made</p>
+    <p class="foot__mark" aria-label="FAXI"><span>F</span><span>A</span><span>X</span><span>I</span></p>
+    <p class="foot__sub">Bakery · Café · Route 1</p>
     <div class="foot__cols">
       <p><b>Faxi Bakery</b>Route 1, Hvolsvöllur<br>under Eyjafjallajökull</p>
       <p><b>Open</b>Every day, 9 to 8</p>
@@ -389,7 +424,7 @@ img { display: block; max-width: 100%; }
     const st = { trigger: '.statement__text', start: 'top bottom+=50px' };
     gsap.from('.statement__text .ln, .statement__text .aside', { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', stagger: .08, scrollTrigger: st });
     gsap.from('.chip', { scale: .6, rotate: i => (i % 2 ? 6 : -6), autoAlpha: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15, scrollTrigger: st });
-    gsap.utils.toArray('.statement__link, .gallery__head, .viewport, .gallery__nav, .foot__script, .foot__cols').forEach(el =>
+    gsap.utils.toArray('.statement__link, .gallery__head, .viewport, .gallery__nav, .foot__kicker, .foot__sub, .foot__cols').forEach(el =>
       gsap.from(el, { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', scrollTrigger: { trigger: el, start: 'top bottom+=50px' } }));
   }
 
@@ -437,6 +472,16 @@ img { display: block; max-width: 100%; }
     gsap.fromTo('.place__media img', { yPercent: -7 }, { yPercent: 7, ease: 'none', scrollTrigger: { trigger: '.place__media', start: 'top bottom', end: 'bottom top', scrub: true } });
     gsap.fromTo('.inset__frame img', { scale: 1.12 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.inset__frame', start: 'top bottom', end: 'center center', scrub: true } });
   }
+  // Our story (only present when built with the story): words slide in from the sides, bakes drift, polaroid settles
+  if (!reduce && document.querySelector('.story')) {
+    gsap.fromTo('.sw--l', { xPercent: -18 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'top 30%', scrub: true } });
+    gsap.fromTo('.sw--r', { xPercent: 18 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'top 30%', scrub: true } });
+    gsap.to('.story__fly--a', { yPercent: -40, rotate: -2, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.to('.story__fly--b', { yPercent: 30, rotate: 14, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.from('.polaroid', { autoAlpha: 0, y: 40, rotate: -9, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: '.story__body', start: 'top bottom+=50px' } });
+    gsap.from('.story__text > *', { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', stagger: .1, scrollTrigger: { trigger: '.story__body', start: 'top bottom+=50px' } });
+  }
+  if (!reduce) gsap.from('.foot__mark span', { yPercent: 60, autoAlpha: 0, duration: 1, ease: 'power3.out', stagger: .08, scrollTrigger: { trigger: '.foot__mark', start: 'top bottom-=40px' } });
   document.fonts.ready.then(() => ScrollTrigger.refresh());
 })();
 </script>
