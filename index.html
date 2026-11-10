@@ -77,14 +77,17 @@ img { display: block; max-width: 100%; }
 /* ── Statement (SB "our goal") ─────────────────────────────────── */
 .statement { position: relative; z-index: 2; background: var(--cream); padding: clamp(110px, 16vh, 190px) var(--pad) clamp(90px, 13vh, 160px); text-align: center; }
 .statement__text { font-family: var(--display); font-weight: 500; font-size: clamp(34px, 4.6vw, 68px); line-height: 1.06; letter-spacing: -.012em;
-  max-width: 15.5em; margin: 0 auto; }
+  max-width: 17em; margin: 0 auto; }
 .statement__text .ln { display: block; }
 .statement__text em { font-family: var(--text); font-style: italic; color: var(--roof); font-size: .92em; }
 /* Animated drawings set between the words (SB cut-outs → Higgsfield GPT Image 2.6 GIFs of her bakes) */
-.draw { display: inline-block; width: auto; height: 1.85em; vertical-align: -.62em; margin: -.42em -.12em; position: relative; z-index: -1; }
+.draw { display: inline-block; width: auto; height: 1.22em; vertical-align: -.26em; margin: -.24em .06em -.1em; }
+.draw--wide { height: .9em; vertical-align: -.1em; }
+.nw { white-space: nowrap; }
+.mbr { display: none; }
 .statement__text { position: relative; z-index: 0; }
 .aside { display: block; font-family: var(--sans); font-weight: 300; font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
-  line-height: 1.6; margin: .9em auto .7em; max-width: 30em; }
+  line-height: 1.6; margin: .9em auto .7em; max-width: 46em; }
 .statement__link { display: inline-block; margin-top: 46px; font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
 
 /* ── Gallery (LJ slider, measured values) ──────────────────────── */
@@ -197,6 +200,9 @@ img { display: block; max-width: 100%; }
 @media (max-width: 699px) {
   body { font-size: 17px; }
   .wm-eyebrow { font-size: 10px; }
+  .statement__text { font-size: 31px; line-height: 1.12; }
+  .mbr { display: inline; }
+  .aside { max-width: 24em; }
   .nav, .info { font-size: 16px; line-height: 21px; }
   .bar { height: calc(var(--pad) * 2 + 60px); }
   .hero__line { white-space: normal; max-width: 80%; text-align: center; bottom: calc(var(--pad) + 80px); font-size: 19px; line-height: 1.2; }
@@ -266,11 +272,11 @@ img { display: block; max-width: 100%; }
 
   <section class="statement" id="statement" aria-label="About Faxi">
     <h2 class="statement__text">
-      <span class="ln">a bakery <img class="draw draw--wide" src="img/draw-cookie.webp" alt=""> with</span>
-      <span class="ln">unregular stuff, baked</span>
-      <span class="aside">Cinnamon buns every hour · Coffee and matcha · Route 1, by the mountain</span>
-      <span class="ln">by hand <img class="draw draw--wide" src="img/draw-bun.webp" alt=""> under the</span>
-      <span class="ln"><img class="draw draw--wide" src="img/draw-mountain.webp" alt=""> volcano. <em>human made</em> <img class="draw draw--wide" src="img/draw-latte.webp" alt=""></span>
+      <span class="ln">a <span class="nw">bakery <img class="draw" src="img/cut-cookie.webp" alt=""></span> with<br class="mbr"> unregular stuff,</span>
+      <span class="aside"><span class="nw">Cinnamon rolls</span> · <span class="nw">Stuffed cookies</span> · <span class="nw">Coffee and matcha</span></span>
+      <span class="ln">baked by <span class="nw">hand <img class="draw" src="img/cut-bun.webp" alt=""></span> every hour,</span>
+      <span class="ln">right under the <span class="nw"><img class="draw draw--wide" src="img/cut-mountain.webp" alt=""> volcano,</span></span>
+      <span class="ln">and always <span class="nw"><em>human made.</em> <img class="draw" src="img/cut-latte.webp" alt=""></span></span>
     </h2>
     <a class="statement__link u always" href="#bakes">See what's in the oven</a>
   </section>
@@ -408,6 +414,9 @@ img { display: block; max-width: 100%; }
     gsap.fromTo(corners, { y: () => cornerStart() }, { y: () => pad(), ease: 'none', scrollTrigger: { start: 0, end: () => cornerStart() - pad(), scrub: true, invalidateOnRefresh: true } });
   }
 
+  // Hero tagline fades out as the blind closes, so it never runs into the shrinking logo
+  if (!reduce) gsap.to('.hero__line', { autoAlpha: 0, ease: 'none', scrollTrigger: { start: 0, end: () => innerHeight * .45, scrub: true } });
+
   // Spiral mark appears after 60 px (MOTION #8, LJ star button)
   gsap.to(spiral, { scale: 1, rotate: 0, duration: .5, ease: 'power1.inOut', startAt: { scale: 0, rotate: -90 },
     scrollTrigger: { start: 60, toggleActions: 'play none none reverse' } });
@@ -423,7 +432,7 @@ img { display: block; max-width: 100%; }
   if (!reduce) {
     const st = { trigger: '.statement__text', start: 'top bottom+=50px' };
     gsap.from('.statement__text .ln, .statement__text .aside', { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', stagger: .08, scrollTrigger: st });
-    gsap.from('.chip', { scale: .6, rotate: i => (i % 2 ? 6 : -6), autoAlpha: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15, scrollTrigger: st });
+    gsap.from('.statement .draw', { scale: .6, rotate: i => (i % 2 ? 8 : -8), autoAlpha: 0, duration: .9, ease: 'back.out(1.6)', stagger: .12, delay: .2, scrollTrigger: st });
     gsap.utils.toArray('.statement__link, .gallery__head, .viewport, .gallery__nav, .foot__kicker, .foot__sub, .foot__cols').forEach(el =>
       gsap.from(el, { autoAlpha: 0, y: 30, duration: .75, ease: 'power1.inOut', scrollTrigger: { trigger: el, start: 'top bottom+=50px' } }));
   }
